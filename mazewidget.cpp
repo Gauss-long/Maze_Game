@@ -14,6 +14,9 @@ mazeWidget::mazeWidget(QWidget* parent)
     map->makemap();                                     //生成地图
     timer = new QTimer(this);                                           //初始化计时器
     connect(timer, &QTimer::timeout, this, &mazeWidget::time_update);   //链接时间更新信号与槽
+    ui->plaque_time->setText("  ");
+    ui->plaque_grade->setText("  ");
+    ui->label->setText("  ");
 }
 mazeWidget::~mazeWidget() {
     delete ui;
@@ -119,6 +122,8 @@ void mazeWidget::on_start_btn_clicked() {
     ui->stop_ptn->setEnabled(true);
     ui->end_btn->setEnabled(true);
     ui->setting_btn->setEnabled(false);
+    ui->plaque_time->setText("时间");
+    ui->plaque_grade->setText("分数");
 }
 void mazeWidget::on_stop_ptn_clicked() {
     if(stop_switch) {
@@ -143,6 +148,8 @@ void mazeWidget::on_end_btn_clicked() {
     timer->stop();
     time = 0;
     grade = 0;
+    ui->plaque_time->setText("  ");
+    ui->plaque_grade->setText("  ");
     ui->progressBar->setVisible(false);
     ui->grade_value->setText(" ");
     ui->time_value->setText(" ");
@@ -181,5 +188,7 @@ void mazeWidget::on_setting_btn_clicked() {
         map->makemap();
     }
 }
+
+
 
 

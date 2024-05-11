@@ -1,6 +1,7 @@
 #ifndef MAZEWIDGET_H
 #define MAZEWIDGET_H
 
+
 #include <QWidget>
 #include <QMessageBox>      //Qt信息窗口头文件
 #include <QPainter>         //Qt绘图头文件
@@ -31,6 +32,8 @@ private slots:
     void on_setting_btn_clicked();  //|
 
     void time_update();             //时间更新槽函数
+
+
 private:
     Ui::mazeWidget* ui;         //ui对象
     maze* map;                  //迷宫对象
