@@ -2,8 +2,9 @@
 #include "ui_mazewidget.h"
 mazeWidget::mazeWidget(QWidget* parent)
     : QWidget(parent)
-    , ui(new Ui::mazeWidget), map(new maze(20)), painting_switch(false), timing_switch(false)
-    , keybord_switch(false), grade(0), time(0) {
+    , ui(new Ui::mazeWidget), map(new maze(20)) // 将 maze 实例传递给 solve 的构造函数
+    , painting_switch(false), timing_switch(false)
+    , keybord_switch(false), stop_switch(false), grade(0), time(0) {
     //TODO:状态栏
     ui->setupUi(this);
     ui->progressBar->setVisible(false);                 //初始隐藏进度条
@@ -16,9 +17,11 @@ mazeWidget::mazeWidget(QWidget* parent)
     connect(timer, &QTimer::timeout, this, &mazeWidget::time_update);   //链接时间更新信号与槽
     ui->plaque_time->setText("  ");
     ui->plaque_grade->setText("  ");
-    ui->label->setText("  ");
+    ui->label->setVisible(true);
+    ui->solve_btn->setEnabled(false);
 }
-mazeWidget::~mazeWidget() {
+
+mazeWidget::~mazeWidget(){
     delete ui;
     delete map;
     delete timer;
@@ -37,13 +40,13 @@ void mazeWidget::paintEvent(QPaintEvent*) {
             } else if(map->getmap()[i][j] == 7) {
                 painter.fillRect(start_x + i * perblock, strat_y + j * perblock, perblock, perblock, QBrush(Qt::yellow));
             } else if(map->getmap()[i][j] == 3 || map->getmap()[i][j] == 4) {
-                painter.fillRect(start_x + i * perblock, strat_y + j * perblock, perblock, perblock, QBrush(Qt::gray));
+                painter.fillRect(start_x + i * perblock, strat_y + j * perblock, perblock, perblock, QBrush(Qt::white));
             } else if(map->getmap()[i][j] == 5) {
                 painter.fillRect(start_x + i * perblock, strat_y + j * perblock, perblock, perblock, QBrush(Qt::blue));
             } else if(map->getmap()[i][j] == 6) {
                 painter.fillRect(start_x + i * perblock, strat_y + j * perblock, perblock, perblock, QBrush(Qt::green));
             } else {
-                painter.fillRect(start_x + i * perblock, strat_y + j * perblock, perblock, perblock, QBrush(Qt::black));
+                painter.fillRect(start_x + i * perblock, strat_y + j * perblock, perblock, perblock, QBrush(Qt::gray));
             }
         }
     }
@@ -108,6 +111,8 @@ void mazeWidget::time_update() {
     }
 }
 void mazeWidget::on_start_btn_clicked() {
+    ui->label->setVisible(false);
+    ui->solve_btn->setEnabled(true);
     painting_switch = true;
     timing_switch = true;
     keybord_switch = true;
@@ -159,6 +164,8 @@ void mazeWidget::on_end_btn_clicked() {
     ui->start_btn->setEnabled(true);
     ui->setting_btn->setEnabled(true);
     map->rebuildmap();
+    ui->label->setVisible(true);
+    ui->solve_btn->setEnabled(false);
     repaint();
 }
 void mazeWidget::on_rule_btn_clicked() {
@@ -191,4 +198,18 @@ void mazeWidget::on_setting_btn_clicked() {
 
 
 
+
+void mazeWidget::on_solve_btn_clicked() {
+    ui->solve_btn->setEnabled(false);
+    map->solve();
+    repaint();
+    //停留10秒
+    for(long long i=0;i<10000000000;i++);
+
+    map->makemap();
+    repaint();
+    grade += pow(map->getlevel(), 2);
+    ui->grade_value->setText(QString::number(grade));
+    ui->solve_btn->setEnabled(true);
+}
 

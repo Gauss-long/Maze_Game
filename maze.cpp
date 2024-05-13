@@ -158,3 +158,54 @@ void maze::rebuildmap() {
     start_y = 1;
     makemap();
 }
+bool maze::able(int k,int t){
+    Pos last=x[k-1];
+    Pos cur=last;
+    if(t==1&&p[cur.i][cur.j+1]!=0)return 0;
+    if(t==2&&p[cur.i+1][cur.j]!=0)return 0;
+    if(t==3&&p[cur.i][cur.j-1]!=0)return 0;
+    if(t==4&&p[cur.i-1][cur.j]!=0)return 0;
+
+    return 1;
+}
+void maze::brush(int k){
+    for(int m=0;m<k;m++){
+        map[x[m].i][x[m].j]=7;
+    }
+}
+void maze::search(int k){
+    if(x[k-1].i==end_x&&x[k-1].j==end_y){
+        brush(k);
+    }else{
+        for(int t=1;t<=4;t++){
+            if(able(k,t)){
+                Pos cur=x[k-1];
+                if(t==1)cur.j+=1;
+                if(t==2)cur.i+=1;
+                if(t==3)cur.j-=1;
+                if(t==4)cur.i-=1;
+                x[k]=cur;
+                p[cur.i][cur.j]=2;
+                search(k+1);
+                p[cur.i][cur.j]=0;
+            }
+        }
+    }
+}
+void maze::solve(){
+    for(int i=0;i<level*2+1;i++){
+        for(int j=0;j<level*2+1;j++){
+            std::cout<<map[i][j];
+            if(map[i][j]==0||map[i][j]==-1)p[i][j]=1;
+            else if(map[i][j]==6){p[i][j]=0;end_x=i;end_y=j;}
+            else p[i][j]=0;
+        }
+        std::cout<<std::endl;
+    }
+    Pos start={p_x,p_y};
+    x[0]=start;
+    search(1);
+
+    return;
+
+}

@@ -11,11 +11,16 @@
  * 6.终点
  * 7.已经过路径
  * **************************************************/
+struct Pos{
+    int i;
+    int j;
+};
 class maze {
 private:
     int level;  //迷宫阶数
     int** map;  //地图存储空间
     int start_x, start_y;   //起终点
+    int end_x,end_y;
     //生成基础地图（单元格）
     void base();
     //使点的周围设为待定（2）
@@ -33,14 +38,22 @@ public:
     maze(int in_level);
     ~maze();
     //获取地图
-    int getlevel() ;
+    int getlevel();
     int** getmap();
     int getside();
     //生成地图
     void makemap();
     int p_x, p_y; //当前位置
+    Pos x[1000];
+    int p[100][100];
+    bool able(int k,int t);
+    void brush(int k);
+    void search(int k);
+    void solve();
     //重置地图
     void rebuildmap();
     int* operator[](int index);
 };
+
+
 #endif // MAZE_H
