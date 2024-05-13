@@ -172,6 +172,7 @@ void maze::brush(int k){
     for(int m=0;m<k;m++){
         map[x[m].i][x[m].j]=7;
     }
+    map[x[k-1].i][x[k-1].j]=6;
 }
 void maze::search(int k){
     if(x[k-1].i==end_x&&x[k-1].j==end_y){
@@ -195,12 +196,11 @@ void maze::search(int k){
 void maze::solve(){
     for(int i=0;i<level*2+1;i++){
         for(int j=0;j<level*2+1;j++){
-            std::cout<<map[i][j];
             if(map[i][j]==0||map[i][j]==-1)p[i][j]=1;
             else if(map[i][j]==6){p[i][j]=0;end_x=i;end_y=j;}
             else p[i][j]=0;
         }
-        std::cout<<std::endl;
+
     }
     Pos start={p_x,p_y};
     x[0]=start;
